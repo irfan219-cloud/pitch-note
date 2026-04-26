@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patch Notes: Reality v1.0</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #08070b;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #fff;
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+        }
+        #header {
+            width: 1024px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .title-pink {
+            color: #ff3399;
+            font-size: 32px;
+            font-weight: bold;
+            text-shadow: 2px 2px 0px rgba(255, 51, 153, 0.3);
+            letter-spacing: 2px;
+        }
+        .title-cyan {
+            color: #33ccff;
+            font-size: 18px;
+            margin-left: 15px;
+            letter-spacing: 1px;
+        }
+        #audio-btn {
+            position: absolute;
+            right: 0;
+            background: transparent;
+            border: 1px solid #33ccff;
+            color: #33ccff;
+            padding: 6px 12px;
+            font-family: 'Courier New', Courier, monospace;
+            cursor: pointer;
+            font-size: 12px;
+            border-radius: 2px;
+        }
+        #audio-btn:hover {
+            background: rgba(51, 204, 255, 0.1);
+        }
+        
+        #game-wrapper {
+            position: relative;
+            width: 1024px;
+            height: 576px;
+            border: 1px solid #2a1b3d;
+            border-radius: 8px;
+            background-color: #0d0c14;
+            box-shadow: 0 0 40px rgba(255, 51, 153, 0.05);
+            overflow: hidden;
+        }
+        #game-container {
+            width: 100%;
+            height: 100%;
+        }
+        
+        #hud {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+            z-index: 20;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        #hud.active { opacity: 1; }
+
+        #hud-left { text-align: left; }
+        #level-name {
+            font-weight: bold;
+            color: #ffffff;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+        #level-desc {
+            color: #666;
+            font-size: 12px;
+        }
+        
+        #hud-right {
+            text-align: right;
+            font-size: 12px;
+        }
+        .stat-row {
+            margin-bottom: 2px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        .stat-key { color: #666; width: 80px; text-align: right; }
+        .stat-sep { color: #666; margin: 0 8px; }
+        .stat-val { color: #33ccff; font-weight: bold; width: 60px; text-align: right; }
+        
+        #patch-center {
+            position: absolute;
+            top: 40%;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            pointer-events: none;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        #patch-center.active { opacity: 1; }
+        #patch-center-title { 
+            color: #ff3399; 
+            font-size: 14px; 
+            margin-bottom: 15px; 
+            font-weight: bold; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+        }
+        #patch-center-desc { 
+            color: #4a4a40; 
+            font-size: 42px; 
+            font-weight: bold; 
+            margin-bottom: 15px; 
+            letter-spacing: -1px;
+        }
+        #patch-center-sub { 
+            color: #1a5a5a; 
+            font-size: 14px; 
+        }
+
+        #footer {
+            width: 1024px;
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            color: #666;
+            font-size: 13px;
+        }
+        
+        .scanlines {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 5;
+            mix-blend-mode: overlay;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <div>
+            <span class="title-pink">PATCH NOTES</span><span class="title-cyan">:: REALITY v1.0</span>
+        </div>
+        <button id="audio-btn">♪ AUDIO</button>
+    </div>
+
+    <div id="game-wrapper">
+        <div class="scanlines"></div>
+        <div id="game-container"></div>
+        
+        <div id="hud">
+            <div id="hud-left">
+                <div id="level-name">LEVEL 01 :: /float</div>
+                <div id="level-desc">&larr;/&rarr; to move, SPACE to jump</div>
+            </div>
+            <div id="hud-right">
+                <div class="stat-row"><span class="stat-key">gravity</span> <span class="stat-sep">::</span> <span class="stat-val" id="stat-gravity">0.00</span></div>
+                <div class="stat-row"><span class="stat-key">jump</span> <span class="stat-sep">::</span> <span class="stat-val" id="stat-jump">0.0</span></div>
+                <div class="stat-row"><span class="stat-key">collision</span> <span class="stat-sep">::</span> <span class="stat-val" id="stat-collision">ON</span></div>
+                <div class="stat-row"><span class="stat-key">enemy.mode</span> <span class="stat-sep">::</span> <span class="stat-val" id="stat-enemy">kill</span></div>
+                <div class="stat-row"><span class="stat-key">input</span> <span class="stat-sep">::</span> <span class="stat-val" id="stat-input">normal</span></div>
+                <div class="stat-row"><span class="stat-key">time.loop</span> <span class="stat-sep">::</span> <span class="stat-val">off</span></div>
+            </div>
+        </div>
+
+        <div id="patch-center">
+            <div id="patch-center-title">PATCH UPDATE 1.0.1</div>
+            <div id="patch-center-desc">Gravity reduced by 95%</div>
+            <div id="patch-center-sub">// unintended behavior detected</div>
+        </div>
+    </div>
+
+    <div id="footer">
+        <span>&larr; &rarr; move</span>
+        <span>SPACE jump</span>
+        <span>R reset</span>
+        <span>ESC menu</span>
+        <span>ENTER continue</span>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
